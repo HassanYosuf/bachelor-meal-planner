@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#1a1a18" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>Bachelor Meal Planner</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- App Shell -->
+  <div class="app" id="app">
+
+    <!-- Header -->
+    <header class="header">
+      <div class="header-top">
+        <div>
+          <h1 class="app-name">Meal Planner</h1>
+          <p class="app-tagline">Bachelor's kitchen</p>
+        </div>
+        <div class="header-right">
+          <div class="date-badge" id="hdr-date"></div>
+          <button class="icon-btn" id="history-btn" title="View history">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+          </button>
+        </div>
+      </div>
+      <!-- Stats row -->
+      <div class="stats-row">
+        <div class="stat-card">
+          <span class="stat-val" id="s-meals">0</span>
+          <span class="stat-lbl">meals</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-card">
+          <span class="stat-val" id="s-cal">0</span>
+          <span class="stat-lbl">kcal</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-card">
+          <span class="stat-val" id="s-prep">0</span>
+          <span class="stat-lbl">prep needed</span>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main content -->
+    <main class="main">
+
+      <!-- Add Meal Section -->
+      <section class="section add-section">
+        <div class="section-label">Plan a meal</div>
+
+        <!-- Meal Type Tabs -->
+        <div class="type-tabs">
+          <button class="type-tab active" data-type="breakfast">Breakfast</button>
+          <button class="type-tab" data-type="lunch">Lunch</button>
+          <button class="type-tab" data-type="dinner">Dinner</button>
+          <button class="type-tab" data-type="snack">Snack</button>
+        </div>
+
+        <!-- Dropdown -->
+        <div class="select-wrap">
+          <div class="select-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18M3 7h18M3 11h18M3 15h12M3 19h8"/></svg>
+          </div>
+          <select id="meal-drop" class="meal-select">
+            <option value="">Choose a meal...</option>
+          </select>
+          <div class="select-arrow">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg>
+          </div>
+        </div>
+
+        <!-- Meal preview card (shown after select) -->
+        <div class="meal-preview" id="meal-preview" style="display:none">
+          <div class="preview-icon" id="preview-icon"></div>
+          <div class="preview-info">
+            <div class="preview-name" id="preview-name"></div>
+            <div class="preview-meta" id="preview-meta"></div>
+          </div>
+          <button class="add-fab" id="add-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add
+          </button>
+        </div>
+
+        <!-- Soak / Prep Alert -->
+        <div class="prep-alert" id="prep-alert" style="display:none">
+          <div class="prep-alert-header">
+            <div class="prep-pulse"></div>
+            <span class="prep-alert-title" id="prep-title">Prep reminder</span>
+          </div>
+          <p class="prep-msg" id="prep-msg"></p>
+          <div class="prep-timer-row">
+            <div class="prep-countdown" id="prep-countdown"></div>
+            <button class="prep-start-btn" id="prep-start-btn">Start timer</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Done notification -->
+      <div class="notif-bar" id="notif-bar" style="display:none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20,6 9,17 4,12"/></svg>
+        <span id="notif-text"></span>
+      </div>
+
+      <!-- Today's Log -->
+      <section class="section log-section">
+        <div class="section-header">
+          <div class="section-label">Today's log</div>
+          <button class="clear-btn" id="clear-btn" style="display:none">Clear all</button>
+        </div>
+
+        <div id="log-list" class="log-list">
+          <div class="empty-state">
+            <div class="empty-icon">🍽</div>
+            <p>No meals logged yet</p>
+            <span>Pick a meal above to get started</span>
+          </div>
+        </div>
+
+        <button class="save-log-btn" id="save-btn" style="display:none">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"/><polyline points="17,21 17,13 7,13 7,21"/><polyline points="7,3 7,8 15,8"/></svg>
+          Save today's log
+        </button>
+      </section>
+
+    </main>
+
+    <!-- History Drawer -->
+    <div class="drawer-overlay" id="drawer-overlay"></div>
+    <div class="drawer" id="history-drawer">
+      <div class="drawer-handle"></div>
+      <div class="drawer-header">
+        <h2 class="drawer-title">Meal history</h2>
+        <button class="drawer-close" id="drawer-close">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div id="history-list" class="history-list">
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <span>Loading history...</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast"></div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
