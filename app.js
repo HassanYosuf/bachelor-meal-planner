@@ -106,10 +106,12 @@ async function submitAuth() {
 
   if (result.error) {
     errEl.textContent = result.error.message;
-  } else if (authMode === 'signup' && result.data.user && !result.data.session) {
-    errEl.style.color = 'var(--green)';
-    errEl.textContent = 'Check your email to confirm your account.';
   }
+  // email confirmation disabled — session is created immediately on signup
+  // else if (authMode === 'signup' && result.data.user && !result.data.session) {
+  //   errEl.style.color = 'var(--green)';
+  //   errEl.textContent = 'Check your email to confirm your account.';
+  // }
 }
 
 async function signOut() {
