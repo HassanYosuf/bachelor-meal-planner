@@ -184,7 +184,7 @@ async function loadMeals() {
   const { data, error } = await db.from('meals').select('*').order('category').order('name');
   if (error) { showToast('Could not load meals'); return; }
   allMeals = data;
-  populateDropdown('meal-drop', data);
+  populateDropdown('meal-drop', data.filter(m => m.meal_type === selectedType));
   populateDropdown('week-meal-drop', data);
 }
 
@@ -621,15 +621,17 @@ async function loadHouseholdView() {
   }
 
   const hId = memberships[0].household_id;
-  const [{ data: hData }, { data: members }] = await Promise.all([
+  const [hhRes, memRes] = await Promise.all([
     db.from('households').select('*').eq('id', hId).single(),
     db.from('household_members').select('user_id, display_name, joined_at').eq('household_id', hId),
   ]);
 
-  householdData = hData;
-  householdMembers = (members || []).filter(m => m.user_id !== currentUser.id);
+  if (hhRes.error || !hhRes.data) { renderNoHousehold(); return; }
 
-  renderHousehold(hData, members || []);
+  householdData = hhRes.data;
+  householdMembers = (memRes.data || []).filter(m => m.user_id !== currentUser.id);
+
+  renderHousehold(hhRes.data, memRes.data || []);
 }
 
 function renderNoHousehold() {
@@ -821,6 +823,10 @@ function setupListeners() {
       document.querySelectorAll('.type-tab').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       selectedType = btn.dataset.type;
+      const filtered = allMeals.filter(m => m.meal_type === selectedType);
+      populateDropdown('meal-drop', filtered);
+      document.getElementById('meal-preview').style.display = 'none';
+      document.getElementById('prep-alert').style.display = 'none';
     });
   });
 
