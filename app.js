@@ -555,7 +555,6 @@ function openWeekModal(dayIdx, mealType) {
   document.getElementById('week-modal-title').textContent =
     `Add ${labels[mealType]} · ${dayName(dayIdx)}`;
   populateDropdown('week-meal-drop', allMeals.filter(m => m.meal_type === mealType));
-  document.getElementById('week-meal-drop').value = '';
   document.getElementById('week-modal-overlay').style.display = 'block';
   document.getElementById('week-modal').classList.add('open');
 }
