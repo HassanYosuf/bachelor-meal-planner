@@ -24,6 +24,7 @@ let weekModalTarget = null;
 
 let householdData = null;
 let householdMembers = [];
+let weekPlanChannel = null;
 
 /* ─── Date Helpers ─── */
 function getMonday(date) {
@@ -162,6 +163,7 @@ async function showApp() {
   await loadMeals();
   await loadTodayLog();
   await loadHouseholdSilent();
+  setupHouseholdRealtime();
 }
 
 /* ─── View Switching ─── */
@@ -638,6 +640,24 @@ async function loadHouseholdSilent() {
   householdMembers = (members || []).filter(m => m.user_id !== currentUser.id);
 }
 
+function setupHouseholdRealtime() {
+  if (weekPlanChannel) {
+    db.removeChannel(weekPlanChannel);
+    weekPlanChannel = null;
+  }
+  if (!householdMembers.length) return;
+
+  weekPlanChannel = db
+    .channel('household-week-plans')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'week_plans' }, (payload) => {
+      const changedUserId = payload.new?.user_id || payload.old?.user_id;
+      if (changedUserId && changedUserId !== currentUser.id) {
+        if (currentView === 'week') fetchWeekPlan().then(renderWeekSlots);
+      }
+    })
+    .subscribe();
+}
+
 async function loadHouseholdView() {
   const el = document.getElementById('household-content');
   el.innerHTML = `<div style="padding:24px"><div class="loading-spinner"><div class="spinner"></div><span>Loading...</span></div></div>`;
@@ -758,6 +778,7 @@ async function joinHousehold() {
   householdData = h;
   showToast('Joined ' + h.name + '!');
   await loadHouseholdSilent();
+  setupHouseholdRealtime();
   loadHouseholdView();
 }
 
@@ -770,6 +791,7 @@ async function leaveHousehold() {
   if (error) { showToast('Could not leave'); return; }
   householdData = null;
   householdMembers = [];
+  if (weekPlanChannel) { db.removeChannel(weekPlanChannel); weekPlanChannel = null; }
   showToast('Left household');
   loadHouseholdView();
 }

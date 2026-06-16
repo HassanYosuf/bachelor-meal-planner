@@ -325,7 +325,7 @@ body {
 .dd-item:active { background: var(--bg-3); }
 
 .modal-sheet .custom-dropdown {
-  max-height: calc(50dvh - 130px);
+  max-height: calc(58dvh - 130px);
 }
 
 
@@ -1320,7 +1320,7 @@ body {
   transform: translateX(-50%) translateY(100%);
   width: 100%;
   max-width: 430px;
-  height: 50dvh;
+  height: 58dvh;
   background: var(--bg-2);
   border-top: 1px solid var(--border-mid);
   border-radius: 22px 22px 0 0;
