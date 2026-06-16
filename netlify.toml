@@ -1,4 +1,5 @@
 [build]
+  command = "sed -i 's|SUPABASE_ANON_KEY_PLACEHOLDER|'\"$SUPABASE_ANON_KEY\"'|g' app.js"
   publish = "."
 
 [[headers]]

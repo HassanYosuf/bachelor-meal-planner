@@ -273,11 +273,56 @@ body {
   outline: none;
   transition: border-color 0.18s;
   min-height: 48px;
+  text-align: left;
 }
 
-.meal-select:focus { border-color: var(--accent); }
-.meal-select option { background: #fff; color: var(--text); }
-.meal-select optgroup { color: var(--accent); font-weight: 600; }
+.meal-select:focus,
+.meal-select:active { border-color: var(--accent); outline: none; }
+
+/* ─── Custom Dropdown ─── */
+.custom-dropdown {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  z-index: 500;
+  background: var(--bg-2);
+  border: 1.5px solid var(--border-mid);
+  border-radius: var(--radius-sm);
+  max-height: 260px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  box-shadow: var(--shadow-md);
+}
+
+.custom-dropdown.open { display: block; }
+
+.dd-group {
+  padding: 8px 14px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--accent);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  background: var(--bg-3);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+}
+
+.dd-item {
+  padding: 11px 14px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  border-bottom: 1px solid var(--border);
+  transition: background 0.12s;
+}
+
+.dd-item:last-child { border-bottom: none; }
+.dd-item:hover,
+.dd-item:active { background: var(--bg-3); }
 
 .select-arrow {
   position: absolute;

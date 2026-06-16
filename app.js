@@ -126,18 +126,23 @@ function toggleUserMenu() {
 
 /* ─── Boot ─── */
 async function init() {
+  const { data: { session } } = await db.auth.getSession();
+  if (session) {
+    currentUser = session.user;
+    await showApp();
+  } else {
+    showAuthScreen();
+  }
+
   db.auth.onAuthStateChange(async (event, session) => {
-    if (session) {
+    if (event === 'SIGNED_IN' && !currentUser) {
       currentUser = session.user;
       await showApp();
-    } else {
+    } else if (event === 'SIGNED_OUT') {
       currentUser = null;
       showAuthScreen();
     }
   });
-
-  const { data: { session } } = await db.auth.getSession();
-  if (!session) showAuthScreen();
 }
 
 function showAuthScreen() {
@@ -185,30 +190,49 @@ function setDate() {
 async function loadMeals() {
   const { data, error } = await db.from('meals').select('*').order('category').order('name');
   if (error) { showToast('Could not load meals'); return; }
-  allMeals = data;
-  populateDropdown('meal-drop', data.filter(m => m.meal_type === selectedType));
-  populateDropdown('week-meal-drop', data);
+  allMeals = data || [];
+  populateDropdown('meal-drop', allMeals.filter(m => m.meal_type === selectedType));
 }
 
 function populateDropdown(id, meals) {
-  const drop = document.getElementById(id);
+  const list = document.getElementById(id + '-list');
+  const btn = document.getElementById(id + '-btn');
+  btn.textContent = 'Choose a meal...';
+  btn.dataset.value = '';
+
   const groups = {};
   meals.forEach(m => {
     if (!groups[m.category]) groups[m.category] = [];
     groups[m.category].push(m);
   });
-  drop.innerHTML = '<option value="">Choose a meal...</option>';
+
+  list.innerHTML = '';
   Object.keys(groups).sort().forEach(cat => {
-    const og = document.createElement('optgroup');
-    og.label = cat;
+    const grp = document.createElement('div');
+    grp.className = 'dd-group';
+    grp.textContent = cat;
+    list.appendChild(grp);
     groups[cat].forEach(m => {
-      const op = document.createElement('option');
-      op.value = m.id;
-      op.textContent = m.name + (m.soak_mins ? ' ⏱' : '');
-      og.appendChild(op);
+      const item = document.createElement('div');
+      item.className = 'dd-item';
+      item.dataset.value = m.id;
+      item.textContent = m.name + (m.soak_mins ? ' ⏱' : '');
+      item.addEventListener('click', () => {
+        btn.textContent = item.textContent;
+        btn.dataset.value = m.id;
+        list.classList.remove('open');
+        if (id === 'meal-drop') onMealSelect();
+      });
+      list.appendChild(item);
     });
-    drop.appendChild(og);
   });
+}
+
+function toggleDropdown(id) {
+  const list = document.getElementById(id + '-list');
+  const isOpen = list.classList.contains('open');
+  document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
+  if (!isOpen) list.classList.add('open');
 }
 
 async function loadTodayLog() {
@@ -225,7 +249,7 @@ async function loadTodayLog() {
 }
 
 function onMealSelect() {
-  const id = document.getElementById('meal-drop').value;
+  const id = document.getElementById('meal-drop-btn').dataset.value;
   if (!id) {
     document.getElementById('meal-preview').style.display = 'none';
     document.getElementById('prep-alert').style.display = 'none';
@@ -257,7 +281,7 @@ function onMealSelect() {
 }
 
 async function addMeal() {
-  const id = document.getElementById('meal-drop').value;
+  const id = document.getElementById('meal-drop-btn').dataset.value;
   if (!id) { showToast('Select a meal first'); return; }
   const meal = allMeals.find(m => m.id === id);
   if (!meal) return;
@@ -278,7 +302,9 @@ async function addMeal() {
   if (error) { showToast('Could not save meal'); return; }
 
   loggedMeals.push(data);
-  document.getElementById('meal-drop').value = '';
+  const dropBtn = document.getElementById('meal-drop-btn');
+  dropBtn.textContent = 'Choose a meal...';
+  dropBtn.dataset.value = '';
   document.getElementById('meal-preview').style.display = 'none';
   document.getElementById('prep-alert').style.display = 'none';
   renderLog();
@@ -528,6 +554,7 @@ function openWeekModal(dayIdx, mealType) {
   const labels = { breakfast: 'Breakfast', lunch: 'Lunch', dinner: 'Dinner', snack: 'Snack' };
   document.getElementById('week-modal-title').textContent =
     `Add ${labels[mealType]} · ${dayName(dayIdx)}`;
+  populateDropdown('week-meal-drop', allMeals.filter(m => m.meal_type === mealType));
   document.getElementById('week-meal-drop').value = '';
   document.getElementById('week-modal-overlay').style.display = 'block';
   document.getElementById('week-modal').classList.add('open');
@@ -536,12 +563,15 @@ function openWeekModal(dayIdx, mealType) {
 function closeWeekModal() {
   document.getElementById('week-modal-overlay').style.display = 'none';
   document.getElementById('week-modal').classList.remove('open');
+  const btn = document.getElementById('week-meal-drop-btn');
+  btn.textContent = 'Choose a meal...';
+  btn.dataset.value = '';
   weekModalTarget = null;
 }
 
 async function confirmAddToWeek() {
   if (!weekModalTarget) return;
-  const mealId = document.getElementById('week-meal-drop').value;
+  const mealId = document.getElementById('week-meal-drop-btn').dataset.value;
   if (!mealId) { showToast('Select a meal'); return; }
 
   const meal = allMeals.find(m => m.id === mealId);
@@ -832,7 +862,6 @@ function setupListeners() {
     });
   });
 
-  document.getElementById('meal-drop').addEventListener('change', onMealSelect);
   document.getElementById('add-btn').addEventListener('click', addMeal);
   document.getElementById('prep-start-btn').addEventListener('click', startSoakTimer);
   document.getElementById('save-btn').addEventListener('click', saveLog);
@@ -850,6 +879,9 @@ function setupListeners() {
     const avatar = document.getElementById('avatar-btn');
     if (!menu.contains(e.target) && e.target !== avatar) {
       menu.style.display = 'none';
+    }
+    if (!e.target.closest('.select-wrap')) {
+      document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
     }
   });
 }

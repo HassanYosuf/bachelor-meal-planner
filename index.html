@@ -7,6 +7,8 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <title>Bachelor Meal Planner</title>
+  <link rel="icon" type="image/svg+xml" href="logo.svg" />
+  <link rel="apple-touch-icon" href="logo.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -118,12 +120,11 @@
             <div class="select-icon">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18M3 7h18M3 11h18M3 15h12M3 19h8"/></svg>
             </div>
-            <select id="meal-drop" class="meal-select">
-              <option value="">Choose a meal...</option>
-            </select>
+            <button class="meal-select" id="meal-drop-btn" data-value="" onclick="toggleDropdown('meal-drop')">Choose a meal...</button>
             <div class="select-arrow">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg>
             </div>
+            <div class="custom-dropdown" id="meal-drop-list"></div>
           </div>
           <div class="meal-preview" id="meal-preview" style="display:none">
             <div class="preview-icon" id="preview-icon"></div>
@@ -227,12 +228,11 @@
         <div class="select-icon">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h18M3 7h18M3 11h18M3 15h12M3 19h8"/></svg>
         </div>
-        <select id="week-meal-drop" class="meal-select">
-          <option value="">Choose a meal...</option>
-        </select>
+        <button class="meal-select" id="week-meal-drop-btn" data-value="" onclick="toggleDropdown('week-meal-drop')">Choose a meal...</button>
         <div class="select-arrow">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6,9 12,15 18,9"/></svg>
         </div>
+        <div class="custom-dropdown" id="week-meal-drop-list"></div>
       </div>
       <button class="save-log-btn" onclick="confirmAddToWeek()">Add to plan</button>
     </div>
