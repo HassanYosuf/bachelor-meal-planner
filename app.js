@@ -561,7 +561,9 @@ function openWeekModal(dayIdx, mealType) {
 
 function closeWeekModal() {
   document.getElementById('week-modal-overlay').style.display = 'none';
-  document.getElementById('week-modal').classList.remove('open');
+  const modal = document.getElementById('week-modal');
+  modal.classList.remove('open');
+  document.querySelectorAll('.custom-dropdown').forEach(d => d.classList.remove('open'));
   const btn = document.getElementById('week-meal-drop-btn');
   btn.textContent = 'Choose a meal...';
   btn.dataset.value = '';
