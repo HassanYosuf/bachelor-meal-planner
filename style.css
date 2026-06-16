@@ -324,6 +324,13 @@ body {
 .dd-item:hover,
 .dd-item:active { background: var(--bg-3); }
 
+/* Dropdown inside bottom sheet opens upward */
+.modal-sheet .custom-dropdown {
+  top: auto;
+  bottom: calc(100% + 4px);
+  max-height: 220px;
+}
+
 .select-arrow {
   position: absolute;
   right: 12px;
