@@ -195,6 +195,15 @@
         <label class="profile-label" style="margin-top:12px">Email</label>
         <input class="auth-input" id="profile-email-ro" type="email" disabled style="opacity:0.55;cursor:default" />
 
+        <label class="profile-label" style="margin-top:18px">Appearance</label>
+        <div class="theme-toggle-row">
+          <div class="theme-toggle-opts" id="theme-opts">
+            <button class="theme-opt" data-theme-val="system" onclick="setTheme('system')">System</button>
+            <button class="theme-opt" data-theme-val="light" onclick="setTheme('light')">Light</button>
+            <button class="theme-opt" data-theme-val="dark" onclick="setTheme('dark')">Dark</button>
+          </div>
+        </div>
+
         <button class="save-log-btn" style="margin-top:20px" onclick="saveProfile()">Save changes</button>
       </div>
     </div>

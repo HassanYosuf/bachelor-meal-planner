@@ -187,8 +187,35 @@ function toggleUserMenu() {
   m.style.display = m.style.display === 'none' ? 'block' : 'none';
 }
 
+/* ─── Theme ─── */
+function initTheme() {
+  const saved = localStorage.getItem('app-theme') || 'system';
+  applyTheme(saved);
+}
+
+function applyTheme(val) {
+  if (val === 'system') {
+    document.documentElement.removeAttribute('data-theme');
+  } else {
+    document.documentElement.setAttribute('data-theme', val);
+  }
+}
+
+function setTheme(val) {
+  localStorage.setItem('app-theme', val);
+  applyTheme(val);
+  updateThemeButtons(val);
+}
+
+function updateThemeButtons(val) {
+  document.querySelectorAll('#theme-opts .theme-opt').forEach(btn => {
+    btn.classList.toggle('active', btn.dataset.themeVal === val);
+  });
+}
+
 /* ─── Boot ─── */
 async function init() {
+  initTheme();
   const { data: { session } } = await db.auth.getSession();
   if (session) {
     currentUser = session.user;
@@ -933,7 +960,10 @@ async function loadHouseholdView() {
   const allM = memRes.data || [];
   selfMember = allM.find(m => m.user_id === currentUser.id) || null;
   householdMembers = allM.filter(m => m.user_id !== currentUser.id);
-  currentDM = rotRes.data ? rotRes.data.decision_maker_user_id : getCurrentDecisionMaker();
+  // Don't fall back to a local calculation — ensureDecisionMaker() handles creation
+  // and always re-fetches the authoritative value from the DB (race-safe).
+  currentDM = rotRes.data ? rotRes.data.decision_maker_user_id : null;
+  if (!currentDM) await ensureDecisionMaker();
 
   renderHousehold(hhRes.data, allM, currentDM);
 }
@@ -1115,6 +1145,7 @@ function openProfileDrawer() {
     pa.style.fontSize = '28px';
   }
 
+  updateThemeButtons(localStorage.getItem('app-theme') || 'system');
   document.getElementById('profile-overlay').classList.add('open');
   document.getElementById('profile-drawer').classList.add('open');
 }
@@ -1184,7 +1215,7 @@ async function deleteAccount() {
   closeDeleteModal();
   showToast('Deleting account...');
 
-  // Leave household first (best-effort)
+  // Leave household first so FK constraints on household_members are cleared
   if (householdData) {
     await db.from('household_members')
       .delete().eq('household_id', householdData.id).eq('user_id', currentUser.id);
@@ -1193,10 +1224,9 @@ async function deleteAccount() {
   const { error } = await db.rpc('delete_user');
   if (error) { showToast('Could not delete account — contact support'); return; }
 
-  currentUser = null;
-  showAuthScreen();
-  showAuthState('form');
+  // Session is gone — sign out clears local state; SIGNED_OUT event shows auth screen
   showToast('Account deleted');
+  await db.auth.signOut();
 }
 
 /* ─── Collaborative Planning ─── */
@@ -1205,7 +1235,7 @@ function allMembersAll() {
   const myName = (currentUser.user_metadata && currentUser.user_metadata.name) || currentUser.email;
   const me = selfMember
     ? { ...selfMember, display_name: selfMember.display_name || myName }
-    : { user_id: currentUser.id, display_name: myName, rotation_order: 1 };
+    : { user_id: currentUser.id, display_name: myName, rotation_order: null };
   return [me, ...householdMembers].sort((a, b) => (a.rotation_order || 99) - (b.rotation_order || 99));
 }
 
@@ -1214,7 +1244,9 @@ function getCurrentDecisionMaker() {
   if (!members.length) return currentUser.id;
   const EPOCH_MONDAY = new Date('1970-01-05T00:00:00Z').getTime();
   const weekMs = 7 * 24 * 60 * 60 * 1000;
-  const weekNumber = Math.floor((currentWeekStart.getTime() - EPOCH_MONDAY) / weekMs);
+  // Parse the week-start DATE string as UTC so all timezones get the same weekNumber
+  const wStartUTC = new Date(weekStartStr(currentWeekStart) + 'T00:00:00Z').getTime();
+  const weekNumber = Math.floor((wStartUTC - EPOCH_MONDAY) / weekMs);
   const idx = ((weekNumber % members.length) + members.length) % members.length;
   return members[idx].user_id;
 }
@@ -1222,6 +1254,8 @@ function getCurrentDecisionMaker() {
 async function ensureDecisionMaker() {
   if (!householdData) return;
   const wStart = weekStartStr(currentWeekStart);
+
+  // 1. Try to read an existing entry
   const { data: existing } = await db
     .from('household_week_rotation')
     .select('decision_maker_user_id')
@@ -1231,15 +1265,22 @@ async function ensureDecisionMaker() {
 
   if (existing) { currentDM = existing.decision_maker_user_id; return; }
 
-  const dmId = getCurrentDecisionMaker();
-  const { data, error } = await db.from('household_week_rotation').insert({
+  // 2. None exists yet — try to insert (another user may race us here)
+  await db.from('household_week_rotation').insert({
     household_id: householdData.id,
     week_start: wStart,
-    decision_maker_user_id: dmId,
-  }).select().single();
+    decision_maker_user_id: getCurrentDecisionMaker(),
+  });
 
-  if (!error && data) currentDM = data.decision_maker_user_id;
-  else currentDM = dmId;
+  // 3. Always re-fetch to pick up whatever the DB actually kept (race-safe)
+  const { data: confirmed } = await db
+    .from('household_week_rotation')
+    .select('decision_maker_user_id')
+    .eq('household_id', householdData.id)
+    .eq('week_start', wStart)
+    .maybeSingle();
+
+  currentDM = confirmed ? confirmed.decision_maker_user_id : null;
 }
 
 async function fetchCollaborativeData() {
