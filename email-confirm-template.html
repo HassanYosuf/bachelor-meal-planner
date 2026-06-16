@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirm your Meal Planner account</title>
+</head>
+<body style="margin:0;padding:0;background-color:#f5f3ef;font-family:'Inter',Arial,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background-color:#f5f3ef;padding:40px 16px;">
+    <tr>
+      <td align="center">
+        <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="max-width:520px;width:100%;">
+
+          <!-- Logo & Brand -->
+          <tr>
+            <td align="center" style="padding-bottom:28px;">
+              <table cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td style="background-color:#d4700a;border-radius:18px;width:56px;height:56px;text-align:center;vertical-align:middle;">
+                    <span style="font-size:28px;line-height:56px;display:block;">🍳</span>
+                  </td>
+                </tr>
+              </table>
+              <div style="margin-top:12px;font-family:'Arial Black',Arial,sans-serif;font-size:20px;font-weight:900;color:#1c1a17;letter-spacing:-0.3px;">
+                Meal Planner
+              </div>
+              <div style="font-size:12px;color:#a09890;margin-top:2px;letter-spacing:0.02em;">
+                Bachelor's Kitchen
+              </div>
+            </td>
+          </tr>
+
+          <!-- Card -->
+          <tr>
+            <td style="background-color:#ffffff;border-radius:20px;box-shadow:0 2px 16px rgba(0,0,0,0.08);padding:40px 36px 36px;border:1px solid #e4dfd7;">
+
+              <!-- Heading -->
+              <h1 style="margin:0 0 8px;font-family:'Arial Black',Arial,sans-serif;font-size:22px;font-weight:900;color:#1c1a17;line-height:1.2;">
+                Confirm your account
+              </h1>
+              <p style="margin:0 0 28px;font-size:14px;color:#6b6560;line-height:1.6;">
+                You're one step away from planning meals with your household. Click the button below to verify your email address and activate your account.
+              </p>
+
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td align="center" style="padding-bottom:28px;">
+                    <a href="{{ .ConfirmationURL }}"
+                       style="display:inline-block;background-color:#d4700a;color:#ffffff;font-family:'Arial Black',Arial,sans-serif;font-size:15px;font-weight:800;text-decoration:none;padding:15px 36px;border-radius:12px;box-shadow:0 3px 10px rgba(212,112,10,0.30);letter-spacing:0.01em;">
+                      ✓ &nbsp; Confirm my email
+                    </a>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Divider -->
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td style="border-top:1px solid #e4dfd7;padding-bottom:20px;"></td>
+                </tr>
+              </table>
+
+              <!-- Link fallback -->
+              <p style="margin:0 0 6px;font-size:12px;color:#a09890;">
+                Button not working? Copy and paste this link into your browser:
+              </p>
+              <p style="margin:0;font-size:11px;word-break:break-all;">
+                <a href="{{ .ConfirmationURL }}" style="color:#d4700a;text-decoration:underline;">
+                  {{ .ConfirmationURL }}
+                </a>
+              </p>
+
+            </td>
+          </tr>
+
+          <!-- Security note -->
+          <tr>
+            <td style="padding:20px 8px 0;">
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation"
+                     style="background-color:#eeeae4;border-radius:12px;padding:14px 18px;">
+                <tr>
+                  <td>
+                    <p style="margin:0;font-size:12px;color:#6b6560;line-height:1.6;">
+                      <strong style="color:#1c1a17;">Didn't sign up?</strong>
+                      You can safely ignore this email — no account will be created without confirmation.
+                      This link expires in <strong style="color:#1c1a17;">24 hours</strong>.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td align="center" style="padding:24px 8px 8px;">
+              <p style="margin:0;font-size:11px;color:#a09890;line-height:1.6;">
+                Meal Planner · Bachelor's Kitchen<br/>
+                <a href="{{ .SiteURL }}" style="color:#a09890;text-decoration:underline;">{{ .SiteURL }}</a>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
