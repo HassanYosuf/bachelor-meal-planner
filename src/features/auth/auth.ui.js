@@ -57,9 +57,16 @@ export async function submitAuth() {
 
   if (result.error) {
     errEl.textContent = result.error.message;
-  } else if (state.authMode === 'signup' && result.data.user && !result.data.session) {
-    document.getElementById('auth-confirm-email').textContent = result.data.user.email;
-    showAuthState('confirm');
+  } else if (state.authMode === 'signup') {
+    if (result.data.session) {
+      // Email confirmation disabled — session returned immediately
+      state.currentUser = result.data.session.user;
+      await showApp();
+    } else {
+      // Email confirmation enabled — ask user to check inbox
+      document.getElementById('auth-confirm-email').textContent = result.data.user.email;
+      showAuthState('confirm');
+    }
   }
 }
 
