@@ -56,3 +56,11 @@ export async function deleteMember(householdId, userId) {
     .eq('household_id', householdId)
     .eq('user_id', userId);
 }
+
+export async function updateMemberDisplayName(householdId, userId, displayName) {
+  return db
+    .from('household_members')
+    .update({ display_name: displayName })
+    .eq('household_id', householdId)
+    .eq('user_id', userId);
+}

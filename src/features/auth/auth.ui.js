@@ -9,6 +9,7 @@ import {
   deleteUserAccount,
 } from './auth.service.js';
 import { showApp } from '../../core/router.js';
+import { updateMemberDisplayName } from '../household/household.service.js';
 
 export function showAuthState(authState) {
   ['form', 'confirm', 'forgot', 'reset-sent', 'new-password'].forEach(s => {
@@ -92,14 +93,23 @@ export async function submitAuth() {
 export async function submitForgotPassword() {
   const email = document.getElementById('forgot-email').value.trim();
   const errEl = document.getElementById('forgot-error');
+  const btn = document.querySelector('#auth-state-forgot .auth-btn');
   errEl.textContent = '';
   if (!email) { errEl.textContent = 'Enter your email'; return; }
 
-  const { error } = await resetPasswordForEmail(email, window.location.href);
+  if (btn) { btn.disabled = true; btn.textContent = '...'; }
 
-  if (error) { errEl.textContent = error.message; return; }
-  document.getElementById('reset-sent-email').textContent = email;
-  showAuthState('reset-sent');
+  try {
+    const { error } = await resetPasswordForEmail(email, window.location.origin);
+    if (error) { errEl.textContent = error.message; return; }
+    document.getElementById('reset-sent-email').textContent = email;
+    showAuthState('reset-sent');
+  } catch (e) {
+    console.error('Reset error:', e);
+    errEl.textContent = 'Error: ' + (e.message || String(e));
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = 'Send reset link'; }
+  }
 }
 
 export async function sendPasswordReset() {
@@ -229,6 +239,13 @@ export async function saveProfile() {
   if (error) { showToast('Could not save'); return; }
 
   state.currentUser.user_metadata = { ...state.currentUser.user_metadata, name };
+
+  // Keep household_members.display_name in sync
+  if (state.householdData) {
+    await updateMemberDisplayName(state.householdData.id, state.currentUser.id, name);
+    if (state.selfMember) state.selfMember.display_name = name;
+  }
+
   updateHeaderUser();
   closeProfileDrawer();
   showToast('Profile updated!');
