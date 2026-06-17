@@ -4,7 +4,8 @@ import { toggleDropdown } from './utils/dropdown.js';
 import { toggleUserMenu, signOut, openProfileDrawer, closeProfileDrawer,
   triggerAvatarUpload, handleAvatarChange, saveProfile, sendPasswordReset,
   submitAuth, switchAuthTab, showAuthState, submitForgotPassword,
-  submitNewPassword, openDeleteModal, closeDeleteModal, deleteAccount } from './features/auth/auth.ui.js';
+  submitNewPassword, openDeleteModal, closeDeleteModal, deleteAccount,
+  togglePw } from './features/auth/auth.ui.js';
 import { removeMeal } from './features/meals/meals.ui.js';
 import { shiftWeek, selectWeekDay, openWeekModal, closeWeekModal,
   confirmAddToWeek, removeFromWeekPlan } from './features/week-plan/weekPlan.ui.js';
@@ -35,6 +36,7 @@ Object.assign(window, {
   openDeleteModal,
   closeDeleteModal,
   deleteAccount,
+  togglePw,
   removeMeal,
   shiftWeek,
   selectWeekDay,

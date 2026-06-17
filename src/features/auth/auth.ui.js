@@ -44,29 +44,48 @@ export async function submitAuth() {
   btn.disabled = true;
   btn.textContent = '...';
 
-  let result;
-  if (state.authMode === 'signin') {
-    result = await signIn(email, password);
-  } else {
-    const name = document.getElementById('auth-name').value.trim();
-    result = await signUp(email, password, name);
-  }
-
-  btn.disabled = false;
-  btn.textContent = state.authMode === 'signin' ? 'Sign in' : 'Create account';
-
-  if (result.error) {
-    errEl.textContent = result.error.message;
-  } else if (state.authMode === 'signup') {
-    if (result.data.session) {
-      // Email confirmation disabled — session returned immediately
-      state.currentUser = result.data.session.user;
-      await showApp();
+  try {
+    let result;
+    if (state.authMode === 'signin') {
+      result = await signIn(email, password);
     } else {
-      // Email confirmation enabled — ask user to check inbox
-      document.getElementById('auth-confirm-email').textContent = result.data.user.email;
-      showAuthState('confirm');
+      const name = document.getElementById('auth-name').value.trim();
+      result = await signUp(email, password, name);
     }
+
+    console.log('Auth result:', result);
+
+    btn.disabled = false;
+    btn.textContent = state.authMode === 'signin' ? 'Sign in' : 'Create account';
+
+    if (result.error) {
+      errEl.textContent = result.error.message;
+      return;
+    }
+
+    if (state.authMode === 'signup') {
+      if (result.data?.session) {
+        state.currentUser = result.data.session.user;
+        await showApp();
+      } else if (result.data?.user) {
+        document.getElementById('auth-confirm-email').textContent = result.data.user.email;
+        showAuthState('confirm');
+      } else {
+        errEl.textContent = 'Sign up failed — please try again.';
+      }
+    } else {
+      if (!result.data?.user) {
+        errEl.textContent = 'Sign in failed — please try again.';
+        return;
+      }
+      state.currentUser = result.data.user;
+      await showApp();
+    }
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = state.authMode === 'signin' ? 'Sign in' : 'Create account';
+    console.error('Auth error:', e);
+    errEl.textContent = 'Error: ' + (e.message || String(e));
   }
 }
 
@@ -103,6 +122,14 @@ export async function submitNewPassword() {
   state.inPasswordRecovery = false;
   showToast('Password updated!');
   await showApp();
+}
+
+export function togglePw(inputId, btn) {
+  const input = document.getElementById(inputId);
+  const isHidden = input.type === 'password';
+  input.type = isHidden ? 'text' : 'password';
+  btn.querySelector('.eye-icon').style.display = isHidden ? 'none' : '';
+  btn.querySelector('.eye-off-icon').style.display = isHidden ? '' : 'none';
 }
 
 export async function signOut() {
