@@ -42,6 +42,15 @@ export const state = {
   resolveModalTarget: null,
   collaborativeChannel: null,
 
+  /* pantry */
+  pantryIngredients: [],
+  mealIngredients: [],
+  pantryItems: [],
+  customPantryItems: [],   // [{ name, category }]
+  pantryFilter: 'all',
+  pantrySearch: '',
+  pantryPendingCategory: 'vegetable',
+
   /* ui */
   toastTimer: null,
 };

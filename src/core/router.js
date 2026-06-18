@@ -5,6 +5,7 @@ import { setDate, setupListeners, loadMeals, loadTodayLog } from '../features/me
 import { loadHouseholdSilent, setupHouseholdRealtime } from '../features/household/household.ui.js';
 import { loadWeekView } from '../features/week-plan/weekPlan.ui.js';
 import { loadHouseholdView } from '../features/household/household.ui.js';
+import { loadPantryView } from '../features/pantry/pantry.ui.js';
 import { db } from './supabase.js';
 
 export function showAuthScreen() {
@@ -26,17 +27,19 @@ export async function showApp() {
 
 export function switchView(view) {
   state.currentView = view;
-  document.getElementById('view-today').style.display = view === 'today' ? 'block' : 'none';
-  document.getElementById('view-week').style.display = view === 'week' ? 'block' : 'none';
+  document.getElementById('view-today').style.display     = view === 'today'     ? 'block' : 'none';
+  document.getElementById('view-week').style.display      = view === 'week'      ? 'block' : 'none';
   document.getElementById('view-household').style.display = view === 'household' ? 'block' : 'none';
-  document.getElementById('stats-row').style.display = view === 'today' ? 'flex' : 'none';
+  document.getElementById('view-pantry').style.display    = view === 'pantry'    ? 'block' : 'none';
+  document.getElementById('stats-row').style.display      = view === 'today'     ? 'flex'  : 'none';
 
   document.querySelectorAll('.nav-btn').forEach(b =>
     b.classList.toggle('active', b.dataset.view === view));
   document.getElementById('user-menu').style.display = 'none';
 
-  if (view === 'week') loadWeekView();
+  if (view === 'week')      loadWeekView();
   if (view === 'household') loadHouseholdView();
+  if (view === 'pantry')    loadPantryView();
 }
 
 export async function initApp() {

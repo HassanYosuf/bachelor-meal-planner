@@ -1833,3 +1833,412 @@ body {
   font-weight: 600;
   box-shadow: 0 1px 3px rgba(0,0,0,0.12);
 }
+
+/* ── Pantry View ─────────────────────────────────────────────────────────── */
+.pantry-loading {
+  text-align: center;
+  color: var(--text-2);
+  padding: 40px 20px;
+}
+
+.pantry-wrap {
+  padding-bottom: 24px;
+}
+
+.pantry-section {
+  margin-bottom: 4px;
+}
+
+/* Pantry header row */
+.pantry-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.pantry-clear-btn {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-family: var(--font-body);
+  transition: opacity 0.15s;
+}
+.pantry-clear-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.pantry-hint {
+  font-size: 12px;
+  color: var(--text-2);
+  margin-bottom: 14px;
+}
+
+/* Search bar */
+.pantry-search-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+  background: var(--bg-3, var(--bg-card));
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 0 12px;
+  margin-bottom: 10px;
+  transition: border-color 0.15s;
+}
+.pantry-search-wrap:focus-within {
+  border-color: var(--accent);
+}
+.pantry-search-icon {
+  flex-shrink: 0;
+  color: var(--text-2);
+  margin-right: 8px;
+}
+.pantry-search-input {
+  flex: 1;
+  border: none;
+  background: transparent;
+  font-size: 14px;
+  color: var(--text);
+  font-family: var(--font-body);
+  padding: 11px 0;
+  outline: none;
+}
+.pantry-search-input::placeholder {
+  color: var(--text-2);
+}
+.pantry-search-clear {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--text-2);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+  margin-left: 4px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Custom ingredient tags */
+.pantry-custom-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+.custom-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px 5px 12px;
+  border-radius: 20px;
+  background: rgba(212, 112, 10, 0.12);
+  border: 1.5px solid var(--accent);
+  color: var(--accent);
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-body);
+}
+.custom-tag-remove {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 16px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0 2px;
+  opacity: 0.7;
+}
+.custom-tag-remove:hover {
+  opacity: 1;
+}
+
+/* Custom add button */
+/* Custom ingredient add card */
+.pantry-add-card {
+  border: 1.5px dashed var(--accent);
+  border-radius: 12px;
+  background: rgba(212, 112, 10, 0.05);
+  padding: 12px 14px;
+  margin-bottom: 12px;
+}
+.pantry-add-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.pantry-add-label {
+  font-size: 13px;
+  color: var(--text-2);
+}
+.pantry-add-label strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.pantry-add-confirm-btn {
+  padding: 6px 16px;
+  border-radius: 20px;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.pantry-add-confirm-btn:active { opacity: 0.8; }
+
+/* Category selector */
+.cat-selector {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.cat-opt {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  border: 1.5px solid var(--border);
+  background: var(--bg-2);
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: background 0.12s, border-color 0.12s;
+  font-size: 18px;
+  line-height: 1;
+}
+.cat-opt-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-2);
+  white-space: nowrap;
+}
+.cat-opt.active {
+  border-color: var(--accent);
+  background: rgba(212, 112, 10, 0.12);
+}
+.cat-opt.active .cat-opt-label {
+  color: var(--accent);
+}
+
+/* Custom pills embedded in categories */
+.custom-pill {
+  position: relative;
+  opacity: 0.95;
+}
+.custom-pill-x {
+  margin-left: 4px;
+  font-size: 14px;
+  opacity: 0.7;
+}
+
+.pantry-custom-hint {
+  font-size: 12px;
+  color: var(--text-2);
+  margin-bottom: 8px;
+}
+
+/* Ingredient category groups */
+.pantry-category {
+  margin-bottom: 14px;
+}
+
+.pantry-cat-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-2);
+  margin-bottom: 7px;
+}
+
+.pantry-pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.pantry-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: var(--font-body);
+  border: 1.5px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+  user-select: none;
+}
+.pantry-pill:active {
+  transform: scale(0.95);
+}
+.pantry-pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+/* Suggestions section */
+.pantry-suggest-section {
+  margin-top: 8px;
+}
+
+.pantry-suggest-header {
+  margin-bottom: 10px;
+}
+
+/* Filter tabs */
+.pantry-filter-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 14px;
+}
+
+.pantry-filter-tab {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  border: 1.5px solid var(--border);
+  background: var(--bg-2);
+  color: var(--text-2);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.pantry-filter-tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+}
+
+.pantry-empty-hint {
+  text-align: center;
+  color: var(--text-2);
+  font-size: 13px;
+  padding: 32px 16px;
+}
+
+/* Suggestion cards */
+.suggest-card {
+  background: var(--bg-2);
+  border-radius: 14px;
+  padding: 14px;
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+}
+
+.suggest-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.suggest-meal-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+}
+
+.suggest-icon {
+  font-size: 26px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.suggest-name {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.suggest-meta {
+  font-size: 12px;
+  color: var(--text-2);
+}
+
+.suggest-missing {
+  font-size: 11px;
+  color: var(--text-2);
+  margin-top: 4px;
+  font-style: italic;
+}
+
+/* Score badge */
+.suggest-score {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: var(--font-body);
+}
+.badge-ready {
+  background: rgba(34, 197, 94, 0.15);
+  color: #22c55e;
+}
+.badge-close {
+  background: rgba(234, 179, 8, 0.15);
+  color: #ca8a04;
+}
+.badge-partial {
+  background: rgba(148, 163, 184, 0.15);
+  color: var(--text-2);
+}
+
+/* Action buttons */
+.suggest-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.suggest-btn {
+  flex: 1;
+  padding: 8px 10px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: var(--font-body);
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s, transform 0.1s;
+}
+.suggest-btn:active {
+  transform: scale(0.97);
+}
+
+.suggest-log-btn {
+  background: var(--accent);
+  color: #fff;
+}
+
+.suggest-week-btn {
+  background: var(--bg-3, var(--bg-card));
+  color: var(--text);
+  border: 1.5px solid var(--border);
+}

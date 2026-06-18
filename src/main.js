@@ -14,6 +14,10 @@ import { createHousehold, joinHousehold, leaveHousehold,
 import { openSuggestModal, closeSuggestModal, confirmSuggestMeal,
   submitVote, openResolveModal, closeResolveModal,
   resolveTie } from './features/collaborative/collaborative.ui.js';
+import { togglePantryItem, clearAllPantry, setPantryFilter,
+  setPantrySearch, pantrySearchKeydown, addCustomPantryItem,
+  removeCustomPantryItem, setPendingCategory, confirmCustomPantryItem,
+  pantryLogToday, pantryAddToWeek } from './features/pantry/pantry.ui.js';
 
 // Expose functions used in inline HTML event handlers (onclick="...")
 Object.assign(window, {
@@ -55,6 +59,17 @@ Object.assign(window, {
   openResolveModal,
   closeResolveModal,
   resolveTie,
+  togglePantryItem,
+  clearAllPantry,
+  setPantryFilter,
+  setPantrySearch,
+  pantrySearchKeydown,
+  addCustomPantryItem,
+  removeCustomPantryItem,
+  setPendingCategory,
+  confirmCustomPantryItem,
+  pantryLogToday,
+  pantryAddToWeek,
 });
 
 initApp();
