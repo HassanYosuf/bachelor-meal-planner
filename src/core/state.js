@@ -50,7 +50,13 @@ export const state = {
   pantryFilter: 'all',
   pantrySearch: '',
   pantryPendingCategory: 'vegetable',
+  shoppingCart: [],        // [{ name, ingredientId? }]
+  voiceActive: false,
+  pantryListOpen: false,
+  mealRepeatDays: 7,       // repeat-avoidance window (0 = off)
+  recentMealHistory: [],   // [{ meal_id, meal_name, log_date, daysAgo }]
 
   /* ui */
   toastTimer: null,
+  streak: 0,
 };

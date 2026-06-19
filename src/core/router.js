@@ -1,12 +1,15 @@
 import { state } from './state.js';
 import { initTheme } from '../utils/theme.js';
 import { updateHeaderUser, showAuthState } from '../features/auth/auth.ui.js';
-import { setDate, setupListeners, loadMeals, loadTodayLog } from '../features/meals/meals.ui.js';
+import { setDate, setupListeners, loadMeals, loadTodayLog, loadAndShowStreak } from '../features/meals/meals.ui.js';
 import { loadHouseholdSilent, setupHouseholdRealtime } from '../features/household/household.ui.js';
 import { loadWeekView } from '../features/week-plan/weekPlan.ui.js';
 import { loadHouseholdView } from '../features/household/household.ui.js';
 import { loadPantryView } from '../features/pantry/pantry.ui.js';
 import { db } from './supabase.js';
+import { checkOnboarding, onboardingNext, onboardingDone } from '../utils/onboarding.js';
+export { onboardingNext, onboardingDone };
+
 
 export function showAuthScreen() {
   document.getElementById('auth-screen').style.display = 'flex';
@@ -21,7 +24,9 @@ export async function showApp() {
   updateHeaderUser();
   await loadMeals();
   await loadTodayLog();
+  loadAndShowStreak();
   await loadHouseholdSilent();
+  setTimeout(() => checkOnboarding(state.currentUser.id), 800);
   setupHouseholdRealtime();
 }
 

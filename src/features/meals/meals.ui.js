@@ -5,6 +5,7 @@ import { populateDropdown, toggleDropdown } from '../../utils/dropdown.js';
 import {
   fetchMeals, fetchTodayLog, insertMealLog, deleteMealLog,
   deleteMealLogs, upsertDailySummary, fetchDailySummaries, fetchMealLogsByDate,
+  fetchStreakData,
 } from './meals.service.js';
 
 export { populateDropdown, toggleDropdown };
@@ -143,8 +144,9 @@ export function renderLog() {
     logList.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">🍽</div>
-        <p>No meals logged yet</p>
-        <span>Pick a meal above to get started</span>
+        <p class="empty-title">Nothing logged yet</p>
+        <p class="empty-sub">Not sure what to cook? See what your kitchen can make.</p>
+        <button class="empty-cta-btn" onclick="switchView('pantry')">Open Kitchen →</button>
       </div>`;
     saveBtn.style.display = 'none';
     clearBtn.style.display = 'none';
@@ -173,6 +175,35 @@ export function renderLog() {
 
   saveBtn.style.display = 'flex';
   clearBtn.style.display = 'block';
+}
+
+export async function loadAndShowStreak() {
+  const { data } = await fetchStreakData(state.currentUser.id);
+  if (!data) return;
+  const today = new Date();
+  let streak = 0;
+  for (let i = 0; i < 60; i++) {
+    const d = new Date(today);
+    d.setDate(today.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    const found = data.find(r => r.log_date === dateStr && r.total_meals > 0);
+    if (found) streak++;
+    else break;
+  }
+  state.streak = streak;
+  renderStreak();
+}
+
+function renderStreak() {
+  const el = document.getElementById('streak-display');
+  if (!el) return;
+  if (state.streak > 0) {
+    el.textContent = `🔥 ${state.streak}`;
+    el.style.display = 'flex';
+    el.title = `${state.streak}-day logging streak`;
+  } else {
+    el.style.display = 'none';
+  }
 }
 
 export function updateStats() {

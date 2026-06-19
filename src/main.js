@@ -1,4 +1,6 @@
-import { initApp, switchView } from './core/router.js';
+import { initApp, switchView, onboardingNext, onboardingDone } from './core/router.js';
+import { initSwipeNav } from './utils/swipe.js';
+import { state } from './core/state.js';
 import { setTheme } from './utils/theme.js';
 import { toggleDropdown } from './utils/dropdown.js';
 import { toggleUserMenu, signOut, openProfileDrawer, closeProfileDrawer,
@@ -17,11 +19,20 @@ import { openSuggestModal, closeSuggestModal, confirmSuggestMeal,
 import { togglePantryItem, clearAllPantry, setPantryFilter,
   setPantrySearch, pantrySearchKeydown, addCustomPantryItem,
   removeCustomPantryItem, setPendingCategory, confirmCustomPantryItem,
-  pantryLogToday, pantryAddToWeek } from './features/pantry/pantry.ui.js';
+  pantryLogToday, pantryAddToWeek,
+  startVoiceCapture, stopVoiceCapture,
+  toggleIngredientList,
+  setRepeatDays,
+  toggleStapleChip, confirmStaples, dismissStaplesModal,
+  addMissingToCart, removeFromCart, clearCart,
+  openCartDrawer, closeCartDrawer,
+  orderOnAmazon, orderAllOnAmazon } from './features/pantry/pantry.ui.js';
 
 // Expose functions used in inline HTML event handlers (onclick="...")
 Object.assign(window, {
   switchView,
+  onboardingNext,
+  onboardingDone,
   setTheme,
   toggleDropdown,
   toggleUserMenu,
@@ -70,6 +81,21 @@ Object.assign(window, {
   confirmCustomPantryItem,
   pantryLogToday,
   pantryAddToWeek,
+  startVoiceCapture,
+  stopVoiceCapture,
+  toggleIngredientList,
+  setRepeatDays,
+  toggleStapleChip,
+  confirmStaples,
+  dismissStaplesModal,
+  addMissingToCart,
+  removeFromCart,
+  clearCart,
+  openCartDrawer,
+  closeCartDrawer,
+  orderOnAmazon,
+  orderAllOnAmazon,
 });
 
 initApp();
+initSwipeNav(switchView, () => state.currentView);

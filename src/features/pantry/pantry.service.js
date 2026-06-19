@@ -37,3 +37,16 @@ export async function removePantryItem(userId, ingredientId) {
 export async function clearPantry(userId) {
   return db.from('pantry_items').delete().eq('user_id', userId);
 }
+
+export async function fetchRecentMealHistory(userId, days) {
+  const since = new Date();
+  since.setDate(since.getDate() - days);
+  const sinceStr = since.toISOString().split('T')[0];
+  return db
+    .from('meal_logs')
+    .select('meal_id, meal_name, log_date')
+    .eq('user_id', userId)
+    .gte('log_date', sinceStr)
+    .not('meal_id', 'is', null)
+    .order('log_date', { ascending: false });
+}

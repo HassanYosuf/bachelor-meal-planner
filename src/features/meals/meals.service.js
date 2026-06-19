@@ -45,3 +45,12 @@ export async function fetchMealLogsByDate(userId, dateStr) {
     .eq('log_date', dateStr)
     .eq('user_id', userId);
 }
+
+export async function fetchStreakData(userId) {
+  return db
+    .from('daily_summaries')
+    .select('log_date, total_meals')
+    .eq('user_id', userId)
+    .order('log_date', { ascending: false })
+    .limit(60);
+}
