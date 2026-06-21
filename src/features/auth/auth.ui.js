@@ -210,24 +210,29 @@ export function updateHeaderUser() {
 }
 
 export function openProfileDrawer() {
-  const m = state.currentUser.user_metadata || {};
-  const name = m.name || m.full_name || '';
-  const avatarUrl = getUserAvatarUrl(state.currentUser);
+  try {
+    const m = state.currentUser.user_metadata || {};
+    const name = m.name || m.full_name || '';
+    const avatarUrl = getUserAvatarUrl(state.currentUser);
 
-  document.getElementById('profile-name').value = name;
-  document.getElementById('profile-email-ro').value = state.currentUser.email;
+    document.getElementById('profile-name').value = name;
+    document.getElementById('profile-email-ro').value = state.currentUser.email;
 
-  const pa = document.getElementById('profile-avatar');
-  if (avatarUrl) {
-    pa.innerHTML = `<img src="${avatarUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
-  } else {
-    pa.textContent = userInitial(state.currentUser);
-    pa.style.fontSize = '28px';
+    const pa = document.getElementById('profile-avatar');
+    if (avatarUrl) {
+      pa.innerHTML = `<img src="${avatarUrl}" alt="" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`;
+    } else {
+      pa.textContent = userInitial(state.currentUser);
+      pa.style.fontSize = '28px';
+    }
+
+    updateThemeButtons(localStorage.getItem('app-theme') || 'system');
+    document.getElementById('profile-overlay').classList.add('open');
+    document.getElementById('profile-drawer').classList.add('open');
+  } catch (e) {
+    console.error('openProfileDrawer error:', e);
+    showToast('Could not open profile: ' + e.message);
   }
-
-  updateThemeButtons(localStorage.getItem('app-theme') || 'system');
-  document.getElementById('profile-overlay').classList.add('open');
-  document.getElementById('profile-drawer').classList.add('open');
 }
 
 export function closeProfileDrawer() {
