@@ -11,7 +11,8 @@ export function fmtTime(secs) {
 
 export function userInitial(user) {
   if (!user) return '?';
-  const name = user.user_metadata && user.user_metadata.name;
+  const m = user.user_metadata || {};
+  const name = m.name || m.full_name;
   if (name) return name[0].toUpperCase();
   return (user.email || '?')[0].toUpperCase();
 }

@@ -47,3 +47,10 @@ export function getAvatarPublicUrl(path) {
 export async function deleteUserAccount() {
   return db.rpc('delete_user');
 }
+
+export async function signInWithGoogle() {
+  return db.auth.signInWithOAuth({
+    provider: 'google',
+    options: { redirectTo: window.location.origin },
+  });
+}

@@ -1082,6 +1082,37 @@ body {
 .auth-btn:active { opacity: 0.88; }
 .auth-btn:disabled { opacity: 0.45; cursor: default; }
 
+.auth-btn-google {
+  background: var(--bg-3);
+  color: var(--text);
+  box-shadow: none;
+  border: 1px solid var(--border-mid);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  margin-top: 0;
+}
+.auth-btn-google:active { opacity: 0.82; }
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0 12px;
+  color: var(--text-3);
+  font-size: 13px;
+}
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
 .auth-confirm {
   display: flex;
   flex-direction: column;
